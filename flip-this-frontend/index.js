@@ -7,15 +7,16 @@ const canvasAreaDiv = document.querySelector("#canvas-area")
 const animationConfigDiv = document.querySelector("#animation-config")
 const saveBtn = document.querySelector('button#save')
 const drawBtn = document.querySelector('button#draw-save')
+const nextBtn = document.querySelector("button#next-page")
+const playBtn = document.querySelector("button#play")
+
 let paint;
 
 let clickX = new Array();
 let clickY = new Array();
 let clickDrag = new Array();
 
-const WIPFlipbook = {
-    currentPage: 1,
-}
+const WIPFlipbook = {}
 
 const save = {
     clickX, clickY, clickDrag
@@ -28,9 +29,13 @@ function handleFlipbookCreation(e) {
     e.preventDefault()
 
     let flipbookTitle = e.target[0].value
-    let totalPages = e.target[1].value
+    let totalPages = parseInt(e.target[1].value)
 
-    WIPFlipbook[flipbookTitle] = []
+    WIPFlipbook.title = flipbookTitle
+    WIPFlipbook.pages = []
+    WIPFlipbook.totalPages = totalPages
+
+    WIPFlipbook.currentPage = 1;
 
     addPagesToWIPBook(totalPages, flipbookTitle)
 
@@ -43,15 +48,15 @@ function handleFlipbookCreation(e) {
 
 function addPagesToWIPBook(number, flipbookTitle) {
     for (let i = 1; i <= number; i++) {
-        let page = `page ${i}`
-        WIPFlipbook[flipbookTitle].push({
-            [page]: {} 
+        WIPFlipbook.pages.push({
+            layers: []
         })
     }
 }
 
 function createCanvas() {
     let canvas = document.createElement('canvas')
+    canvas.setAttribute('data-page-num', WIPFlipbook.currentPage)
     let context = canvas.getContext('2d')
 
     canvas.height = '500'
@@ -119,20 +124,9 @@ function redraw(context, save) {
 }
 
 function saveCurrentDraw(e) {
-    save.clickX = clickX
-    save.clickY = clickY
-    save.clickDrag = clickDrag
-
-    console.log(save)
-    let canvas = document.querySelector('canvas')
-    canvas.remove()
-
-    let newCanvas = document.createElement('canvas')
-
-    newCanvas.height = '500'
-    newCanvas.width = '800'
-    canvasAreaDiv.append(newCanvas)
-
+    
+    WIPFlipbook.pages[WIPFlipbook.currentPage-1].layers.push(JSON.parse(JSON.stringify(save)))
+    console.log(WIPFlipbook)
 }
 
 function drawCurrentSave(e) {
@@ -142,9 +136,48 @@ function drawCurrentSave(e) {
     redraw(context, save)
 }
 
+function handleNextPageClick(e) {
+    if (WIPFlipbook.currentPage !== WIPFlipbook.totalPages) {
+        let currentLayers = Array.from(document.querySelectorAll(`canvas[data-page-num="${WIPFlipbook.currentPage}"]`))
+        currentLayers.forEach(layer => {
+            layer.style.display = 'none'
+        })
+        WIPFlipbook.currentPage+=1
+        console.log(WIPFlipbook.currentPage)
+        save.clickX = []
+        save.clickY = []
+        save.clickDrag = []
+    
+        createCanvas()
+    } else {
+        alert("Last Page")
+    }
+}
+
+// Play
+
+function handlePlayClick(e) {
+    console.log("hello")
+    let lastLayer = document.querySelector(`canvas[data-page-num="${WIPFlipbook.currentPage}"]`)
+    console.log(lastLayer)
+    lastLayer.style.display = 'none'
+
+    let allCanvases = Array.from(document.querySelectorAll('canvas'))
+    let time = 700
+    allCanvases.forEach(canvas => {
+        setTimeout(() => {
+            canvas.style.display = 'block'
+            setTimeout(() => canvas.style.display = 'none', 600)
+        }, time)
+        time+=700
+    })
+}
+
 // Event listeners -----------
 
 createFlipbookForm.addEventListener('submit', handleFlipbookCreation)
 
 saveBtn.addEventListener('click', saveCurrentDraw)
 drawBtn.addEventListener('click', drawCurrentSave)
+nextBtn.addEventListener('click', handleNextPageClick)
+playBtn.addEventListener('click', handlePlayClick)
