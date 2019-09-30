@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+}
+
+#main-container {
+    display: flex;
+}
+
+#canvas-area {
+    flex-basis: 60%;
+    background-color: grey;
+    height: 600px;
+}
+#animation-config {
+    flex-basis: 40%;
+    height: 600px;
+}

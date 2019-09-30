@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  animation: one
+  value: MyString
+  type: 
+
+two:
+  animation: two
+  value: MyString
+  type: 

@@ -1,0 +1,2 @@
+class FlipbooksController < ApplicationController
+end
