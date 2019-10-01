@@ -16,6 +16,8 @@ const blinkAnimationBtn = document.querySelector("button#animate-blink")
 const shakeAnimationBtn = document.querySelector("button#animate-shake")
 const moveLeftAnimation = document.querySelector("button#animate-move-left")
 const moveRightAnimation = document.querySelector("button#animate-move-right")
+const moveUpAnimation = document.querySelector("button#animate-move-up")
+const moveDownAnimation = document.querySelector("button#animate-move-down")
 
 
 let paint;
@@ -148,7 +150,6 @@ function stopDraw(e) {
 
 function addClick(x, y, dragging) {
     let currentCanvasCoOrds = getCoOrdsBasedOnCurrentPageAndLayer()
-    console.log(currentCanvasCoOrds)
     if (Array.isArray(currentCanvasCoOrds.clickX) && Array.isArray(currentCanvasCoOrds.clickY) && Array.isArray(currentCanvasCoOrds.clickDrag)) {
         currentCanvasCoOrds.clickX.push(x);
         currentCanvasCoOrds.clickY.push(y);
@@ -161,9 +162,6 @@ function addClick(x, y, dragging) {
         currentCanvasCoOrds.clickY.push(y);
         currentCanvasCoOrds.clickDrag.push(dragging)
     }
-    // save.clickX.push(x);
-    // save.clickY.push(y);
-    // save.clickDrag.push(dragging)
 }
 
 function getCoOrdsBasedOnCurrentPageAndLayer() {
@@ -344,17 +342,9 @@ function addMoveLeftAnimation (e){
         speed += incrementBy
     })
     alteredCoordinates.unshift(currentLayer)
-    // currentLayerPages.forEach((layer, index) => {
-    //     WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentCanvasCoOrds))
-    //     drawCurrentSave(layer, currentCanvasCoOrds)
     for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index++) {
-        console.log({altered: alteredCoordinates[index-(WIPFlipbook.currentPage-1)]})
         WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
-        
-        console.log(WIPFlipbook.pages[index])//.layers[WIPFlipbook.currentLayer-1])
-        
         drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])
-        
     }
 }
 
@@ -375,21 +365,57 @@ function addMoveRightAnimation (e) {
         speed += incrementBy
     })
     alteredCoordinates.unshift(currentLayer)
-    // currentLayerPages.forEach((layer, index) => {
-    //     WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentCanvasCoOrds))
-    //     drawCurrentSave(layer, currentCanvasCoOrds)
     for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index++) {
-        console.log({altered: alteredCoordinates[index-(WIPFlipbook.currentPage-1)]})
         WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
-        
-        console.log(WIPFlipbook.pages[index])//.layers[WIPFlipbook.currentLayer-1])
-        
-        drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])
-        
+        drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])   
     }
-
 }
 
+function addMoveUpAnimation(e) {
+    currentLayer = getCoOrdsBasedOnCurrentPageAndLayer()
+    let currentLayerPages = document.querySelectorAll(`canvas[data-layer-num="${WIPFlipbook.currentLayer}"]`)
+    let min = Math.min(...currentLayer.clickY)
+    let totalDistanceToMove = min - 20
+    let pagesLeft = WIPFlipbook.totalPages - WIPFlipbook.currentPage
+    let incrementBy = Math.round(totalDistanceToMove/pagesLeft)
+    let speed = incrementBy
+    let alteredCoordinates = []
+    for (let index = 0; index < pagesLeft; index++) {
+        alteredCoordinates.push(JSON.parse(JSON.stringify(currentLayer)))
+    }
+    alteredCoordinates.forEach (layerObj => {
+        layerObj.clickY = layerObj.clickY.map(yValue => yValue - speed)
+        speed += incrementBy
+    })
+    alteredCoordinates.unshift(currentLayer)
+    for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index++) {
+        WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
+        drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])   
+    }
+}
+
+function addMoveDownAnimation(e) {
+    currentLayer = getCoOrdsBasedOnCurrentPageAndLayer()
+    let currentLayerPages = document.querySelectorAll(`canvas[data-layer-num="${WIPFlipbook.currentLayer}"]`)
+    let max = Math.max(...currentLayer.clickY)
+    let totalDistanceToMove = 480 - max
+    let pagesLeft = WIPFlipbook.totalPages - WIPFlipbook.currentPage
+    let incrementBy = Math.round(totalDistanceToMove/pagesLeft)
+    let speed = incrementBy
+    let alteredCoordinates = []
+    for (let index = 0; index < pagesLeft; index++) {
+        alteredCoordinates.push(JSON.parse(JSON.stringify(currentLayer)))
+    }
+    alteredCoordinates.forEach (layerObj => {
+        layerObj.clickY = layerObj.clickY.map(yValue => yValue + speed)
+        speed += incrementBy
+    })
+    alteredCoordinates.unshift(currentLayer)
+    for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index++) {
+        WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
+        drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])   
+    }
+}
 
 
 // Event listeners -----------
@@ -410,3 +436,5 @@ blinkAnimationBtn.addEventListener('click', addBlinkAnimation)
 shakeAnimationBtn.addEventListener('click', addShakeAnimation)
 moveLeftAnimation.addEventListener('click', addMoveLeftAnimation)
 moveRightAnimation.addEventListener('click', addMoveRightAnimation)
+moveUpAnimation.addEventListener('click', addMoveUpAnimation)
+moveDownAnimation.addEventListener('click', addMoveDownAnimation)
