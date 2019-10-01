@@ -9,9 +9,23 @@ body {
 #canvas-area {
     flex-basis: 60%;
     background-color: grey;
-    height: 600px;
 }
 #animation-config {
     flex-basis: 40%;
-    height: 600px;
+}
+
+.page-wrapper {
+    position: relative;
+    width: 800px;
+    height: 500px;
+}
+
+.page-wrapper canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+header {
+    height: 100px;
 }
