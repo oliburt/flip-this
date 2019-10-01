@@ -12,6 +12,9 @@ const backBtn = document.querySelector("button#back-page")
 const playBtn = document.querySelector("button#play")
 const staticBtn = document.querySelector("button#static-background")
 const newLayerBtn = document.querySelector("button#new-layer")
+const blinkAnimationBtn = document.querySelector("button#animate-blink")
+const shakeAnimationBtn = document.querySelector("button#animate-shake")
+
 
 let paint;
 
@@ -283,7 +286,48 @@ function addNewLayerToAllPages(e) {
         let newLayer = createCanvas(WIPFlipbook.currentLayer)
         div.append(newLayer)
     })
+    addNewLayersToWIP()
 }
+
+function addNewLayersToWIP() {
+    WIPFlipbook.pages.forEach(page => page.layers.push({}))
+}
+
+
+// animation functions
+
+function addBlinkAnimation (e) {
+    currentLayer = getCoOrdsBasedOnCurrentPageAndLayer()
+    let currentLayerPages = document.querySelectorAll(`canvas[data-layer-num="${WIPFlipbook.currentLayer}"]`)
+    allPages = WIPFlipbook.pages
+    console.log(allPages)
+    for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index +=2) {
+        console.log(allPages[index])
+        allPages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentLayer));
+       drawCurrentSave(currentLayerPages[index], allPages[index].layers[WIPFlipbook.currentLayer-1])
+    }
+}
+
+function addShakeAnimation (e) {
+    currentLayer = getCoOrdsBasedOnCurrentPageAndLayer()
+    let currentLayerPages = document.querySelectorAll(`canvas[data-layer-num="${WIPFlipbook.currentLayer}"]`)
+    shookLayer =  JSON.parse(JSON.stringify(currentLayer))
+    shookLayer.clickX = shookLayer.clickX.map ((coordinate) => coordinate +5)
+    shookLayer.clickY = shookLayer.clickY.map ((coordinate) => coordinate +5)
+    allPages = WIPFlipbook.pages
+    for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index ++) {
+        if (index%2 === 0){ allPages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentLayer));
+       drawCurrentSave(currentLayerPages[index], allPages[index].layers[WIPFlipbook.currentLayer-1])}
+       else{
+         allPages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(shookLayer));
+            drawCurrentSave(currentLayerPages[index], allPages[index].layers[WIPFlipbook.currentLayer-1])
+       }
+    }
+
+
+}
+
+
 
 // Event listeners -----------
 
@@ -298,3 +342,6 @@ playBtn.addEventListener('click', handlePlayClick)
 staticBtn.addEventListener('click', e => drawStaticLayerOnEachPage(e, save))
 
 newLayerBtn.addEventListener('click', addNewLayerToAllPages)
+
+blinkAnimationBtn.addEventListener('click', addBlinkAnimation)
+shakeAnimationBtn.addEventListener('click', addShakeAnimation)
