@@ -14,6 +14,8 @@ const staticBtn = document.querySelector("button#static-background")
 const newLayerBtn = document.querySelector("button#new-layer")
 const blinkAnimationBtn = document.querySelector("button#animate-blink")
 const shakeAnimationBtn = document.querySelector("button#animate-shake")
+const moveLeftAnimation = document.querySelector("button#animate-move-left")
+const moveRightAnimation = document.querySelector("button#animate-move-right")
 
 
 let paint;
@@ -323,7 +325,68 @@ function addShakeAnimation (e) {
             drawCurrentSave(currentLayerPages[index], allPages[index].layers[WIPFlipbook.currentLayer-1])
        }
     }
+}
 
+function addMoveLeftAnimation (e){
+    currentLayer = getCoOrdsBasedOnCurrentPageAndLayer()
+    let currentLayerPages = document.querySelectorAll(`canvas[data-layer-num="${WIPFlipbook.currentLayer}"]`)
+    let min = Math.min(...currentLayer.clickX)
+    let totalDistanceToMove = min -20
+    let pagesLeft = WIPFlipbook.totalPages - WIPFlipbook.currentPage
+    let incrementBy = Math.round(totalDistanceToMove/pagesLeft)
+    let speed = incrementBy
+    let alteredCoordinates = []
+    for (let index = 0; index < pagesLeft; index++) {
+        alteredCoordinates.push(JSON.parse(JSON.stringify(currentLayer)))
+    }
+    alteredCoordinates.forEach (layerObj => {
+        layerObj.clickX = layerObj.clickX.map(xValue => xValue - speed)
+        speed += incrementBy
+    })
+    alteredCoordinates.unshift(currentLayer)
+    // currentLayerPages.forEach((layer, index) => {
+    //     WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentCanvasCoOrds))
+    //     drawCurrentSave(layer, currentCanvasCoOrds)
+    for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index++) {
+        console.log({altered: alteredCoordinates[index-(WIPFlipbook.currentPage-1)]})
+        WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
+        
+        console.log(WIPFlipbook.pages[index])//.layers[WIPFlipbook.currentLayer-1])
+        
+        drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])
+        
+    }
+}
+
+function addMoveRightAnimation (e) {
+    currentLayer = getCoOrdsBasedOnCurrentPageAndLayer()
+    let currentLayerPages = document.querySelectorAll(`canvas[data-layer-num="${WIPFlipbook.currentLayer}"]`)
+    let max = Math.max(...currentLayer.clickX)
+    let totalDistanceToMove = 780 - max
+    let pagesLeft = WIPFlipbook.totalPages - WIPFlipbook.currentPage
+    let incrementBy = Math.round(totalDistanceToMove/pagesLeft)
+    let speed = incrementBy
+    let alteredCoordinates = []
+    for (let index = 0; index < pagesLeft; index++) {
+        alteredCoordinates.push(JSON.parse(JSON.stringify(currentLayer)))
+    }
+    alteredCoordinates.forEach (layerObj => {
+        layerObj.clickX = layerObj.clickX.map(xValue => xValue + speed)
+        speed += incrementBy
+    })
+    alteredCoordinates.unshift(currentLayer)
+    // currentLayerPages.forEach((layer, index) => {
+    //     WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentCanvasCoOrds))
+    //     drawCurrentSave(layer, currentCanvasCoOrds)
+    for (let index = WIPFlipbook.currentPage-1; index < WIPFlipbook.totalPages; index++) {
+        console.log({altered: alteredCoordinates[index-(WIPFlipbook.currentPage-1)]})
+        WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
+        
+        console.log(WIPFlipbook.pages[index])//.layers[WIPFlipbook.currentLayer-1])
+        
+        drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])
+        
+    }
 
 }
 
@@ -345,3 +408,5 @@ newLayerBtn.addEventListener('click', addNewLayerToAllPages)
 
 blinkAnimationBtn.addEventListener('click', addBlinkAnimation)
 shakeAnimationBtn.addEventListener('click', addShakeAnimation)
+moveLeftAnimation.addEventListener('click', addMoveLeftAnimation)
+moveRightAnimation.addEventListener('click', addMoveRightAnimation)
