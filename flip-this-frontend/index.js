@@ -259,7 +259,8 @@ function saveFlipBook(e) {
     
     API.post(FLIPBOOKS_URL, data).then(flipbook => {
         currentUser.flipbooks.push(flipbook)
-        // update their list flipbooks
+        // console.log(flipbook)
+        flipbooksListContainer.append(createFlipbookListItem(JSON.parse(flipbook.flipbook_object)))
     })
 
 }
@@ -608,6 +609,7 @@ function displayUsersFlipbookList(e) {
 function handleFlipbookDrawAndDisplay(e) {
     let title = e.currentTarget.dataset.title
     console.log(title)
+    console.log(currentUser)
     let obj = currentUser.flipbooks.find(flipbook => {
         return JSON.parse(flipbook.flipbook_object).title === title
     })
