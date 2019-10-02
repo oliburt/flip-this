@@ -1,17 +1,55 @@
 // API ----------
+const BASE_URL = "http://localhost:3000/"
+const USERS_URL = BASE_URL + "users"
 
+function rToJson(resp) {
+    return resp.json()
+}
 
+function post(url, data) {
+    let configObj = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        },
+        body: JSON.stringify(data)
+    }
+    return fetch(url, configObj).then(rToJson)
+}
+
+const API = {
+    post
+}
 // Variables -------
+
+// Login/signup
+const loginBtn = document.querySelector('button#login-btn')
+const signupBtn = document.querySelector('button#signup-btn')
+const loginForm = document.querySelector('form#login-form')
+const signupForm = document.querySelector('form#signup-form')
+
+const cancelBtns = document.querySelectorAll('button.cancel-form')
+
+
 const createFlipbookForm = document.querySelector("#create-flipbook-form")
+const mainContainerDiv = document.querySelector('div#main-container')
+
 const canvasAreaDiv = document.querySelector("#canvas-area")
 const animationConfigDiv = document.querySelector("#animation-config")
 const saveBtn = document.querySelector('button#save')
 const drawBtn = document.querySelector('button#draw-save')
+
+// display buttons
 const nextBtn = document.querySelector("button#next-page")
 const backBtn = document.querySelector("button#back-page")
 const playBtn = document.querySelector("button#play")
+
+// layer buttons
 const staticBtn = document.querySelector("button#static-background")
 const newLayerBtn = document.querySelector("button#new-layer")
+
+// animation buttons
 const blinkAnimationBtn = document.querySelector("button#animate-blink")
 const shakeAnimationBtn = document.querySelector("button#animate-shake")
 const moveLeftAnimation = document.querySelector("button#animate-move-left")
@@ -417,21 +455,69 @@ function addMoveDownAnimation(e) {
     }
 }
 
+// Log in and signup
+
+function showLoginForm(e) {
+    mainContainerDiv.style.display = 'none'
+    createFlipbookForm.style.display = 'none'
+    signupForm.style.display = 'none'
+    loginForm.style.display = 'block'
+}
+
+function showSignupForm(e) {
+    mainContainerDiv.style.display = 'none'
+    createFlipbookForm.style.display = 'none'
+    signupForm.style.display = 'block'
+    loginForm.style.display = 'none'
+}
+
+function showMainContent(e) {
+    signupForm.style.display = 'none'
+    loginForm.style.display = 'none'
+    mainContainerDiv.style.display = 'block'
+    createFlipbookForm.style.display = 'block'
+}
+
+function signupNewUser(e) {
+    e.preventDefault()
+
+    let username = e.target[0].value
+
+    let data = {
+        username
+    }
+    API.post(USERS_URL, data).then(console.log)
+}
+
 
 // Event listeners -----------
 
+
+// login and signup
+loginBtn.addEventListener('click', showLoginForm)
+signupBtn.addEventListener('click', showSignupForm)
+cancelBtns.forEach(btn => btn.addEventListener('click', showMainContent))
+
+signupForm.addEventListener('submit', signupNewUser)
+
 createFlipbookForm.addEventListener('submit', handleFlipbookCreation)
+
 
 saveBtn.addEventListener('click', saveCurrentDraw)
 drawBtn.addEventListener('click', drawCurrentSave)
+
+// display
 nextBtn.addEventListener('click', handleNextPageClick)
 backBtn.addEventListener('click', handleBackPageClick)
 playBtn.addEventListener('click', handlePlayClick)
 
+
+// layering
 staticBtn.addEventListener('click', e => drawStaticLayerOnEachPage(e, save))
 
 newLayerBtn.addEventListener('click', addNewLayerToAllPages)
 
+// animations
 blinkAnimationBtn.addEventListener('click', addBlinkAnimation)
 shakeAnimationBtn.addEventListener('click', addShakeAnimation)
 moveLeftAnimation.addEventListener('click', addMoveLeftAnimation)

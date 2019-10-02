@@ -29,3 +29,7 @@ body {
 header {
     height: 100px;
 }
+
+#login-form, #signup-form {
+    display: none;
+}

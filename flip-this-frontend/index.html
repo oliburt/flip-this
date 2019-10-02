@@ -10,22 +10,45 @@
 <body>
     <header>
         <h1>FlipBook</h1>
+        <div id="login-or-signup">
+            <button id="login-btn">Login</button>
+            <button id="signup-btn">Signup</button>
+        </div>
     </header>
+    <div id="forms-container">
+        <form id="create-flipbook-form">
+            <label for="title">Enter a title:</label>
+            <input type="text" name="title" id="flipbook-title">
+
+            <label for="page-count">Select a number of pages for your FlipBook</label>
+            <select name="page-count" id="page-count">
+                <option value="5">5 pages</option>
+                <option value="10">10 pages</option>
+                <option value="15">15 pages</option>
+                <option value="20">20 pages</option>
+            </select>
+            <button type="submit">Create Book</button>
+        </form>
+
+        <form id="login-form">
+            <h3>Login Below</h3>
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username">
+            <button type='submit'>Login</button>
+            <button class="cancel-form">Cancel</button>
+        </form>
+
+        <form id="signup-form">
+                <h3>Signup Below</h3>
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username">
+                <button type='submit'>Signup</button>
+                <button class="cancel-form">Cancel</button>
+        </form>
+    </div>
+
     <div id="main-container">
         <div id="canvas-area">
-            <form id="create-flipbook-form">
-                <label for="title">Enter a title:</label>
-                <input type="text" name="title" id="flipbook-title">
-
-                <label for="page-count">Select a number of pages for your FlipBook</label>
-                <select name="page-count" id="page-count">
-                    <option value="5">5 pages</option>
-                    <option value="10">10 pages</option>
-                    <option value="15">15 pages</option>
-                    <option value="20">20 pages</option>
-                </select>
-                <button type="submit">Create Book</button>
-            </form>
         </div>
         <div id="animation-config">
             <button id="save">Save Layer</button>
