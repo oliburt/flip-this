@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    text-align: center;
 }
 
 #main-container {
@@ -65,4 +66,10 @@ header {
     border: 1px solid #000;
     margin: 10px;
     text-align: center;
+}
+
+#main-title {
+    font-family: 'Gochi Hand', cursive;
+    font-size: 4rem;
+    margin: 0;
 }
