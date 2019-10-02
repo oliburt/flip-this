@@ -7,7 +7,7 @@ class UsersController < ApplicationController
     def show
         user = User.find_by(username:params[:username])
         if user
-            render json: user
+            render json: user, include: [:flipbooks]
         else
             render json: { errors: ["Username not found"] }, status: 403
         end

@@ -37,6 +37,14 @@ const signupForm = document.querySelector('form#signup-form')
 
 const cancelBtns = document.querySelectorAll('button.cancel-form')
 
+// after login
+const showFlipbooksButtonDiv = document.querySelector('div#display-users-flipbooks')
+const showFlipbooksBtn = document.querySelector('button#show-flipbooks')
+
+const modal = document.querySelector('div#flipbook-list-modal')
+
+const flipbooksListContainer = document.querySelector('div#flipbooks-list-container')
+
 let currentUser;
 
 
@@ -72,7 +80,7 @@ let clickX = new Array();
 let clickY = new Array();
 let clickDrag = new Array();
 
-const WIPFlipbook = {}
+let WIPFlipbook = {}
 
 const save = {
     clickX, clickY, clickDrag
@@ -83,6 +91,10 @@ const save = {
 
 function handleFlipbookCreation(e) {
     e.preventDefault()
+
+    while (canvasAreaDiv.firstChild) {
+        canvasAreaDiv.removeChild(canvasAreaDiv.firstChild)
+    }
 
     let flipbookTitle = e.target[0].value
     let totalPages = parseInt(e.target[1].value)
@@ -137,7 +149,11 @@ function createPageDiv(pageNum) {
 function addPagesToWIPBook(number, flipbookTitle) {
     for (let i = 1; i <= number; i++) {
         WIPFlipbook.pages.push({
-            layers: [{}]
+            layers: [{
+                clickX: [],
+                clickY: [],
+                clickDrag: []
+            }]
         })
     }
 }
@@ -238,10 +254,13 @@ function redraw(context, currenCanvasCoords) {
 function saveFlipBook(e) {
     let data = {
         user_id: currentUser.id,
-        flipbook_object: WIPFlipbook
+        flipbook_object: JSON.stringify(WIPFlipbook)
     }
     
-    API.post(FLIPBOOKS_URL,data).then(console.log)
+    API.post(FLIPBOOKS_URL, data).then(flipbook => {
+        currentUser.flipbooks.push(flipbook)
+        // update their list flipbooks
+    })
 
 }
 
@@ -341,7 +360,11 @@ function addNewLayerToAllPages(e) {
 }
 
 function addNewLayersToWIP() {
-    WIPFlipbook.pages.forEach(page => page.layers.push({}))
+    WIPFlipbook.pages.forEach(page => page.layers.push({
+        clickX: [],
+        clickY: [],
+        clickDrag: []
+    }))
 }
 
 
@@ -510,6 +533,8 @@ function signupNewUser(e) {
             mainContainerDiv.style.display = 'flex'
             usernameSpan.parentNode.style.display = 'block'
             createFlipbookForm.style.display = 'block'
+            showFlipbooksButtonDiv.style.display = 'block'
+
         } else {
             let error = document.createElement('h5')
             error.innerText = user.errors[0]
@@ -527,10 +552,9 @@ function loginUser(e){
     let username = e.target[0].value
 
     API.get(`${USERS_URL}${username}`)//.then(console.log)
-    
     .then(user => {
         if (!user.errors) {
-            currentUser = user
+            currentUser = JSON.parse(JSON.stringify(user))
             let usernameSpan = document.querySelector('span#username')
             usernameSpan.innerText = currentUser.username
             loginBtn.style.display = 'none'
@@ -539,6 +563,10 @@ function loginUser(e){
             mainContainerDiv.style.display = 'flex'
             usernameSpan.parentNode.style.display = 'block'
             createFlipbookForm.style.display = 'block'
+            showFlipbooksButtonDiv.style.display = 'block'
+
+            let flipbooks = currentUser.flipbooks.map(flipbook => JSON.parse(flipbook.flipbook_object))
+            appendAllFlipbooksToList(flipbooks)
         } else {
             let error = document.createElement('h5')
             error.innerText = user.errors[0]
@@ -553,6 +581,65 @@ function loginUser(e){
 
 }
 
+// Displaying users flipbook list
+
+function createFlipbookListItem(flipbook) {
+    let div = document.createElement('div')
+    div.classList.add('flipbook-list-item')
+    div.setAttribute('data-title', flipbook.title)
+    let p = document.createElement('p')
+    p.innerText = flipbook.title
+    div.append(p)
+    div.addEventListener('click', handleFlipbookDrawAndDisplay)
+    return div
+}
+
+function appendAllFlipbooksToList(flipbooks) {
+    flipbooks.forEach(flipbook => {
+        console.log(flipbook)
+        flipbooksListContainer.append(createFlipbookListItem(flipbook))
+    })
+}
+
+function displayUsersFlipbookList(e) {
+    modal.style.display = 'block'
+}
+
+function handleFlipbookDrawAndDisplay(e) {
+    let title = e.currentTarget.dataset.title
+    console.log(title)
+    let obj = currentUser.flipbooks.find(flipbook => {
+        return JSON.parse(flipbook.flipbook_object).title === title
+    })
+    let flipbookObj = JSON.parse(obj.flipbook_object)
+    WIPFlipbook = flipbookObj
+    drawFlipbook(WIPFlipbook)
+
+}
+
+function drawFlipbook(flipbook) {
+    while (canvasAreaDiv.firstChild) {
+        canvasAreaDiv.removeChild(canvasAreaDiv.firstChild)
+    }
+    let numOfPages = flipbook.pages.length
+    createPageDivs(numOfPages)
+    flipbook.pages.forEach((page, pageIndex) => {
+        page.layers.forEach((layer, index) => {
+            if (index === 0) {
+                let canvas = document.querySelector(`div[data-page-num="${pageIndex+1}"] canvas`)
+                drawCurrentSave(canvas, layer)
+            } else {
+                let div = document.querySelector(`div[data-page-num="${pageIndex+1}"]`)
+                let newCanvas = createCanvas(index+1)
+                drawCurrentSave(newCanvas, layer)
+                div.append(newCanvas)
+            }
+        })
+    })
+    WIPFlipbook.currentPage = 1
+
+}
+
 
 // Event listeners -----------
 
@@ -564,6 +651,14 @@ cancelBtns.forEach(btn => btn.addEventListener('click', showMainContent))
 
 signupForm.addEventListener('submit', signupNewUser)
 loginForm.addEventListener('submit', loginUser)
+
+// after login
+showFlipbooksBtn.addEventListener('click', displayUsersFlipbookList)
+window.onclick = e => {
+    if (e.target === modal) modal.style.display = 'none'
+}
+
+
 
 createFlipbookForm.addEventListener('submit', handleFlipbookCreation)
 
