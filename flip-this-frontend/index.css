@@ -30,6 +30,6 @@ header {
     height: 100px;
 }
 
-#login-form, #signup-form {
+#login-form, #signup-form, h4#logged-in {
     display: none;
 }

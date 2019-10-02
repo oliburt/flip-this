@@ -1,9 +1,14 @@
 // API ----------
 const BASE_URL = "http://localhost:3000/"
-const USERS_URL = BASE_URL + "users"
+const USERS_URL = BASE_URL + "users/"
+const FLIPBOOKS_URL = BASE_URL + "flipbooks/"
 
 function rToJson(resp) {
     return resp.json()
+}
+
+function get(url) {
+    return fetch(url).then(rToJson)
 }
 
 function post(url, data) {
@@ -19,7 +24,8 @@ function post(url, data) {
 }
 
 const API = {
-    post
+    post,
+    get
 }
 // Variables -------
 
@@ -30,6 +36,8 @@ const loginForm = document.querySelector('form#login-form')
 const signupForm = document.querySelector('form#signup-form')
 
 const cancelBtns = document.querySelectorAll('button.cancel-form')
+
+let currentUser;
 
 
 const createFlipbookForm = document.querySelector("#create-flipbook-form")
@@ -227,9 +235,14 @@ function redraw(context, currenCanvasCoords) {
     }
 }
 
-function saveCurrentDraw(e) {
-    WIPFlipbook.pages[WIPFlipbook.currentPage-1].layers.push(JSON.parse(JSON.stringify(save)))
-    console.log(WIPFlipbook)
+function saveFlipBook(e) {
+    let data = {
+        user_id: currentUser.id,
+        flipbook_object: WIPFlipbook
+    }
+    
+    API.post(FLIPBOOKS_URL,data).then(console.log)
+
 }
 
 function drawCurrentSave(canvas, currentCanvasCoOrds) {
@@ -486,7 +499,58 @@ function signupNewUser(e) {
     let data = {
         username
     }
-    API.post(USERS_URL, data).then(console.log)
+    API.post(USERS_URL, data).then(user => {
+        if (!user.errors) {
+            currentUser = user
+            let usernameSpan = document.querySelector('span#username')
+            usernameSpan.innerText = currentUser.username
+            loginBtn.style.display = 'none'
+            signupBtn.style.display = 'none'
+            signupForm.style.display = 'none'
+            mainContainerDiv.style.display = 'flex'
+            usernameSpan.parentNode.style.display = 'block'
+            createFlipbookForm.style.display = 'block'
+        } else {
+            let error = document.createElement('h5')
+            error.innerText = user.errors[0]
+            error.style.color = 'red'
+            signupForm.append(error)
+            setTimeout(() => error.remove(), 5000)
+        }
+    }).catch(error => {
+        alert('Server error')
+    })
+}
+
+function loginUser(e){
+    e.preventDefault()
+    let username = e.target[0].value
+
+    API.get(`${USERS_URL}${username}`)//.then(console.log)
+    
+    .then(user => {
+        if (!user.errors) {
+            currentUser = user
+            let usernameSpan = document.querySelector('span#username')
+            usernameSpan.innerText = currentUser.username
+            loginBtn.style.display = 'none'
+            signupBtn.style.display = 'none'
+            loginForm.style.display = 'none'
+            mainContainerDiv.style.display = 'flex'
+            usernameSpan.parentNode.style.display = 'block'
+            createFlipbookForm.style.display = 'block'
+        } else {
+            let error = document.createElement('h5')
+            error.innerText = user.errors[0]
+            error.style.color = 'red'
+            loginForm.append(error)
+            setTimeout(() => error.remove(), 5000)
+        }
+    }).catch(error => {
+        alert('Server error')
+    })
+
+
 }
 
 
@@ -499,11 +563,12 @@ signupBtn.addEventListener('click', showSignupForm)
 cancelBtns.forEach(btn => btn.addEventListener('click', showMainContent))
 
 signupForm.addEventListener('submit', signupNewUser)
+loginForm.addEventListener('submit', loginUser)
 
 createFlipbookForm.addEventListener('submit', handleFlipbookCreation)
 
 
-saveBtn.addEventListener('click', saveCurrentDraw)
+saveBtn.addEventListener('click', saveFlipBook)
 drawBtn.addEventListener('click', drawCurrentSave)
 
 // display

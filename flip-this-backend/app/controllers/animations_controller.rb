@@ -1,2 +1,0 @@
-class AnimationsController < ApplicationController
-end
