@@ -1,15 +1,53 @@
 body {
     margin: 0;
     text-align: center;
+    background: url("./images/lightpaperfibers.png");
+    /* background-color: #ffffcc; */
+}
+
+
+
+
+#notepad-background {
+    display: flex;
+    margin: 0 auto;
+    width: 1100px; 
+    /*margin-left: 50px;
+     padding-bottom: 40px;
+    padding-top: 15px;
+    padding-left: 55px; */
+    background: url("./images/flip-this-notepad-4.png");
+    background-repeat: no-repeat; 
+}
+
+#left-buttons {
+    width: 100px;
+    margin-right: 60px;
+    /* margin-left: -100px; */
+}
+
+#right-buttons {
+    right: 0;
+    margin-left:40px;
+    width: 100px; 
+    float: right;
+    overflow: auto;
 }
 
 #main-container {
     display: flex;
+    /* padding-left:90px; */
+    /* margin: 50px; */
+    /* margin-top: 10px;
+    margin-bottom:20px; */
 }
 
 #canvas-area {
     flex-basis: 60%;
-    background-color: grey;
+    /* background-color: grey; */
+    margin-bottom: 40px;
+    margin-top: 15px;
+    /* margin-left: 55px; */
 }
 #animation-config {
     flex-basis: 40%;
@@ -19,6 +57,7 @@ body {
     position: relative;
     width: 800px;
     height: 500px;
+    
 }
 
 .page-wrapper canvas {
@@ -54,7 +93,17 @@ header {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /* animation parts */   
+    animation-name: animatetop;
+    animation-duration: 0.8s;
 }
+
+/* for modal animation parts */   
+@keyframes animatetop {
+    from {opacity: 0}
+    to {opacity: 1}
+  }
 
 #flipbooks-list-container {
     display: flex;

@@ -52,7 +52,7 @@ const createFlipbookForm = document.querySelector("#create-flipbook-form")
 const mainContainerDiv = document.querySelector('div#main-container')
 
 const canvasAreaDiv = document.querySelector("#canvas-area")
-const animationConfigDiv = document.querySelector("#animation-config")
+const animationConfigDiv = document.querySelector(".animation-config")
 const saveBtn = document.querySelector('button#save')
 const drawBtn = document.querySelector('button#draw-save')
 
