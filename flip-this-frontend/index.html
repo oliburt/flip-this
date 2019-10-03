@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css?family=Mansalva&display=swap" rel="stylesheet">
 
     
-    <link rel="stylesheet" href="form.css">
     <link rel="stylesheet" href="index.css">
     <title>Flip This</title>
 </head>
@@ -19,8 +18,8 @@
         </div>
         <h1 id="main-title">Flip-This!</h1>
         <div id="login-or-signup">
-            <button id="login-btn" class="blue">Login</button>
-            <button id="signup-btn">Signup</button>
+            <button id="login-btn" class="blue login">Login</button>
+            <button id="signup-btn" class="signup">Signup</button>
             <h4 id="logged-in">Logged in: <span id="username"></span></h4>
         </div>
     </div>
@@ -38,43 +37,41 @@
     <br>
     <div id="forms-container">
         <form id="create-flipbook-form">
+            <h4>Create a Flipbook Below</h4>
             <label for="title">Enter a title:</label> <br>
             <input type="text" name="title" id="flipbook-title">
             <br>
-            <label for="page-count">Select a number of pages for your FlipBook</label>
+            <label for="page-count">How many pages?</label>
             <br>
-            <select name="page-count" id="page-count">
+            <select name="page-count" id="page-count" class="select-css">
                 <option value="5">5 pages</option>
                 <option value="10">10 pages</option>
                 <option value="15">15 pages</option>
                 <option value="20">20 pages</option>
+                <option value="25">25 pages</option>
+                <option value="30">30 pages</option>
             </select>
             <br>
-            <button type="submit" class="orange">Create Book</button>
+            <button type="submit" class="blue">Create Book</button>
         </form>
 
         <form id="login-form">
-            <h3>Login Below</h3>
+            <h4>Login Below</h4>
             <label for="username">Username</label>
             <input type="text" name="username" id="username">
             <br>
-            <button type='submit'>Login</button>
-            <br>
-            <button class="cancel-form">Cancel</button>
+            <button type='submit' class="blue">Login</button>
+            <button class="cancel-form orange">Cancel</button>
         </form>
 
         <form id="signup-form">
-                <h3>Signup Below</h3>
+                <h4>Signup Below</h4>
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username">
                 <br>
-                <button type='submit'>Signup</button>
-                <br>
-                <button class="cancel-form">Cancel</button>
+                <button type='submit' class="blue">Signup</button>
+                <button class="cancel-form orange" class="orange">Cancel</button>
         </form>
-    </div>
-    <div id="users-flipbooks">
-
     </div>
     <div id="button-holder">
         <div id="notepad-background">
@@ -84,9 +81,13 @@
                         <button id="next-page">Next Page</button>
                         <button id="back-page">Back Page</button>
                         <button id="play">Play</button>
+                        <button id="new-flipbook">New Flipbook</button>
             </div>
         <div id="main-container">
-            
+            <div id="pages-and-layers">
+                <div id='page-num-div'>Page: <span id='page-num'></span></div>
+                <div id='layer-num-div'>Layer: <span id='layer-num'></span></div>
+            </div>
             <div id="canvas-area">
             </div>
         </div>

@@ -29,11 +29,15 @@ const API = {
 }
 // Variables -------
 
+const footer = document.querySelector('footer')
+
 // Login/signup
 const loginBtn = document.querySelector('button#login-btn')
 const signupBtn = document.querySelector('button#signup-btn')
 const loginForm = document.querySelector('form#login-form')
 const signupForm = document.querySelector('form#signup-form')
+
+const formsContainer = document.querySelector('div#forms-container')
 
 const cancelBtns = document.querySelectorAll('button.cancel-form')
 
@@ -47,7 +51,7 @@ const flipbooksListContainer = document.querySelector('div#flipbooks-list-contai
 
 let currentUser;
 
-
+const newFlipbookBtn = document.querySelector('#new-flipbook')
 const createFlipbookForm = document.querySelector("#create-flipbook-form")
 const mainContainerDiv = document.querySelector('div#main-container')
 const buttonHolderDiv = document.querySelector('div#button-holder')
@@ -56,6 +60,9 @@ const canvasAreaDiv = document.querySelector("#canvas-area")
 const animationConfigDiv = document.querySelector(".animation-config")
 const saveBtn = document.querySelector('button#save')
 const drawBtn = document.querySelector('button#draw-save')
+
+const pageNumSpan = document.querySelector('span#page-num')
+const layerNumSpan = document.querySelector('span#layer-num')
 
 // display buttons
 const nextBtn = document.querySelector("button#next-page")
@@ -109,10 +116,10 @@ function handleFlipbookCreation(e) {
 
     addPagesToWIPBook(totalPages, flipbookTitle)
 
-    // Post ??
     
     createFlipbookForm.style.display = 'none'
-
+    pageNumSpan.innerText = WIPFlipbook.currentPage
+    layerNumSpan.innerText = WIPFlipbook.currentLayer;
     // let firstPage = createCanvas(1,1)
     // canvasAreaDiv.append(firstPage)
     // for (let i = 0; i < totalPages-1; i++) {
@@ -123,6 +130,14 @@ function handleFlipbookCreation(e) {
 
     createPageDivs(totalPages)
 
+}
+
+function showCreateFlipbookForm(e) {
+    buttonHolderDiv.style.display = 'none'
+    signupForm.style.display = 'none'
+    loginForm.style.display = 'none'
+    footer.style.display = 'none'
+    createFlipbookForm.style.display = 'block'
 }
 
 function createPageDivs(totalPages) {
@@ -293,7 +308,7 @@ function handleNextPageClick(e) {
         // save.clickX = []
         // save.clickY = []
         // save.clickDrag = []
-
+        pageNumSpan.innerText = WIPFlipbook.currentPage
         let nextPageDiv = document.querySelector(`div[data-page-num="${WIPFlipbook.currentPage}"]`)
         nextPageDiv.style.display = 'block'
         
@@ -329,7 +344,7 @@ function handlePlayClick(e) {
     lastPage.style.display = 'none'
 
     let allPages = Array.from(document.querySelectorAll('div#canvas-area>div'))
-    let time = 400
+    let time = 350
     allPages.forEach((page, index) => {
         if (index === 0) {
             page.style.display = "block"
@@ -339,7 +354,7 @@ function handlePlayClick(e) {
                 page.style.display = 'block'
                 // setTimeout(() => canvas.style.display = 'none', 600)
             }, time)
-            time+=400
+            time+=350
         }
     })
     WIPFlipbook.currentPage = WIPFlipbook.totalPages
@@ -354,6 +369,7 @@ function getAllPageDivs() {
 function addNewLayerToAllPages(e) {
     WIPFlipbook.currentLayer++
     let allPages = getAllPageDivs()
+    layerNumSpan.innerText = WIPFlipbook.currentLayer;
     allPages.forEach(div => {
         let newLayer = createCanvas(WIPFlipbook.currentLayer)
         div.append(newLayer)
@@ -496,25 +512,32 @@ function addMoveDownAnimation(e) {
 // Log in and signup
 
 function showLoginForm(e) {
-    mainContainerDiv.style.display = 'none'
+    buttonHolderDiv.style.display = 'none'
     createFlipbookForm.style.display = 'none'
     signupForm.style.display = 'none'
     loginForm.style.display = 'block'
+    footer.style.display = 'none'
 }
 
 function showSignupForm(e) {
-    mainContainerDiv.style.display = 'none'
+    buttonHolderDiv.style.display = 'none'
     createFlipbookForm.style.display = 'none'
     signupForm.style.display = 'block'
     loginForm.style.display = 'none'
+    footer.style.display = 'none'
 }
 
 function showMainContent(e) {
     e.preventDefault()
     signupForm.style.display = 'none'
     loginForm.style.display = 'none'
-    mainContainerDiv.style.display = 'block'
-    createFlipbookForm.style.display = 'block'
+    if (Object.entries(WIPFlipbook).length === 0 && WIPFlipbook.constructor === Object) {
+        createFlipbookForm.style.display = 'block'
+        footer.style.display = 'none'
+    } else {
+        buttonHolderDiv.style.display = 'block'
+        footer.style.display = 'block'
+    }
 }
 
 function signupNewUser(e) {
@@ -531,11 +554,14 @@ function signupNewUser(e) {
             loginBtn.style.display = 'none'
             signupBtn.style.display = 'none'
             signupForm.style.display = 'none'
-            mainContainerDiv.style.display = 'flex'
             usernameSpan.parentNode.style.display = 'block'
-            createFlipbookForm.style.display = 'block'
-            showFlipbooksButtonDiv.style.display = 'block'
-
+            if (Object.entries(WIPFlipbook).length === 0 && WIPFlipbook.constructor === Object) {
+                createFlipbookForm.style.display = 'block'
+                footer.style.display = 'none'
+            } else {
+                buttonHolderDiv.style.display = 'block'
+                footer.style.display = 'block'
+            }
         } else {
             let error = document.createElement('h5')
             error.innerText = user.errors[0]
@@ -561,10 +587,15 @@ function loginUser(e){
             loginBtn.style.display = 'none'
             signupBtn.style.display = 'none'
             loginForm.style.display = 'none'
-            mainContainerDiv.style.display = 'flex'
             usernameSpan.parentNode.style.display = 'block'
-            createFlipbookForm.style.display = 'block'
-            showFlipbooksButtonDiv.style.display = 'block'
+            
+            if (Object.entries(WIPFlipbook).length === 0 && WIPFlipbook.constructor === Object) {
+                createFlipbookForm.style.display = 'block'
+                footer.style.display = 'none'
+            } else {
+                buttonHolderDiv.style.display = 'block'
+                footer.style.display = 'block'
+            }
 
             let flipbooks = currentUser.flipbooks.map(flipbook => JSON.parse(flipbook.flipbook_object))
             appendAllFlipbooksToList(flipbooks)
@@ -607,9 +638,13 @@ function displayUsersFlipbookList(e) {
 }
 
 function handleFlipbookDrawAndDisplay(e) {
+    modal.style.display = 'none'
+    buttonHolderDiv.style.display = 'block'
+    footer.style.display = 'block'
+    signupForm.style.display = 'none'
+    loginForm.style.display = 'none'
+    createFlipbookForm.style.display = 'none'
     let title = e.currentTarget.dataset.title
-    console.log(title)
-    console.log(currentUser)
     let obj = currentUser.flipbooks.find(flipbook => {
         return JSON.parse(flipbook.flipbook_object).title === title
     })
@@ -667,6 +702,8 @@ createFlipbookForm.addEventListener('submit', handleFlipbookCreation)
 
 saveBtn.addEventListener('click', saveFlipBook)
 drawBtn.addEventListener('click', drawCurrentSave)
+
+newFlipbookBtn.addEventListener('click', showCreateFlipbookForm)
 
 // display
 nextBtn.addEventListener('click', handleNextPageClick)
