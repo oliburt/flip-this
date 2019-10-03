@@ -72,6 +72,7 @@ const modal = document.querySelector('div#flipbook-list-modal')
 const flipbooksListContainer = document.querySelector('div#flipbooks-list-container')
 
 let currentUser;
+let isPlaying = false;
 
 const newFlipbookBtn = document.querySelector('#new-flipbook')
 const createFlipbookForm = document.querySelector("#create-flipbook-form")
@@ -373,27 +374,38 @@ function handleBackPageClick(e) {
 // Play
 
 function handlePlayClick(e) {
+    if (!isPlaying) {
+        let lastPage = document.querySelector(`div[data-page-num="${WIPFlipbook.currentPage}"]`)
+        lastPage.style.display = 'none'
     
-    let lastPage = document.querySelector(`div[data-page-num="${WIPFlipbook.currentPage}"]`)
-    lastPage.style.display = 'none'
-
-    let allPages = Array.from(document.querySelectorAll('div#canvas-area>div'))
-    let time = 350
-    allPages.forEach((page, index) => {
-        if (index === 0) {
-            page.style.display = "block"
-            pageNumSpan.innerText = index + 1
-        } else {
-            setTimeout(() => {
-                allPages[index-1].style.display = 'none'
-                page.style.display = 'block'
+        let allPages = Array.from(document.querySelectorAll('div#canvas-area>div'))
+        let time = 350
+        isPlaying = true;
+        allPages.forEach((page, index) => {
+            if (index === 0) {
+                page.style.display = "block"
                 pageNumSpan.innerText = index + 1
-                // setTimeout(() => canvas.style.display = 'none', 600)
-            }, time)
-            time+=350
-        }
-    })
-    WIPFlipbook.currentPage = WIPFlipbook.totalPages
+            } else if (index === allPages.length-1) {
+                setTimeout(() => {
+                    allPages[index-1].style.display = 'none'
+                    page.style.display = 'block'
+                    pageNumSpan.innerText = index + 1
+                    // setTimeout(() => canvas.style.display = 'none', 600)
+                    isPlaying = false;
+                }, time)
+                time+=350
+            }else {
+                setTimeout(() => {
+                    allPages[index-1].style.display = 'none'
+                    page.style.display = 'block'
+                    pageNumSpan.innerText = index + 1
+                    // setTimeout(() => canvas.style.display = 'none', 600)
+                }, time)
+                time+=350
+            }
+        })
+        WIPFlipbook.currentPage = WIPFlipbook.totalPages
+    }
 }
 
 function getAllPageDivs() {
