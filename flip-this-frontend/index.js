@@ -50,6 +50,7 @@ let currentUser;
 
 const createFlipbookForm = document.querySelector("#create-flipbook-form")
 const mainContainerDiv = document.querySelector('div#main-container')
+const buttonHolderDiv = document.querySelector('div#button-holder')
 
 const canvasAreaDiv = document.querySelector("#canvas-area")
 const animationConfigDiv = document.querySelector(".animation-config")
@@ -95,7 +96,7 @@ function handleFlipbookCreation(e) {
     while (canvasAreaDiv.firstChild) {
         canvasAreaDiv.removeChild(canvasAreaDiv.firstChild)
     }
-    mainContainerDiv.style.display = 'flex'
+    buttonHolderDiv.style.display = 'block'
     let flipbookTitle = e.target[0].value
     let totalPages = parseInt(e.target[1].value)
 

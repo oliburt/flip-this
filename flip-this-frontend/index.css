@@ -63,7 +63,7 @@ header {
     height: 100px;
 }
 
-#login-form, #signup-form, h4#logged-in, div#users-flipbooks, div#display-users-flipbooks, div#main-container {
+#login-form, #signup-form, h4#logged-in, div#users-flipbooks, div#display-users-flipbooks, div#button-holder {
     display: none;
 }
 
