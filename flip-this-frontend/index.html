@@ -79,11 +79,12 @@
     <div id="button-holder">
         <div id="notepad-background">
                 <div class="animation-config" id="left-buttons">
-                        <button id="save">Save Flipbook</button>
-                        <button id="draw-save">Draw</button>  
+                <div class="button-heading">Navigate</div>
                         <button id="next-page">Next Page</button>
-                        <button id="back-page">Back Page</button>
+                        <button id="back-page">Back Page</button>                        
+                        <button id="draw-save">Draw</button>  
                         <button id="play">Play</button>
+                        <button id="save">Save Flipbook</button>
             </div>
         <div id="main-container">
             
@@ -91,14 +92,14 @@
             </div>
         </div>
         <div class="animation-config" id="right-buttons">
-                
-                <button id="static-background">Set As Static Bgrnd</button>
-                <button id="animate-blink">Add Blink Animation</button>
-                <button id="animate-shake">Add Shake Animation</button>
-                <button id="animate-move-right">Add Move Right Animation</button>
-                <button id="animate-move-left">Add Move Left Animation</button>
-                <button id="animate-move-up">Add Move Up Animation</button>
-                <button id="animate-move-down">Add Move Down Animation</button>
+                <div class="button-heading">Animate</div>
+                <button id="static-background">Set Background</button>
+                <button id="animate-blink">Blink</button>
+                <button id="animate-shake">Shake</button>
+                <button id="animate-move-right">Move Right</button>
+                <button id="animate-move-left">Move Left</button>
+                <button id="animate-move-up">Move Up</button>
+                <button id="animate-move-down">Move Down</button>
             </div>
     </div>
     <div class="animation-config" id="bottom-buttons">
@@ -108,7 +109,31 @@
 
     </div>
     <footer>
-        <h5>footer</h5>
+        <!-- <h2>Lets Flip-This!...</h2> -->
+        <div class="instructions" id="top-instructions">
+        <ol>
+            <li><p>Draw your background, then hit <b>‘Set Background’</b>
+                <br><small>  - this will remain throughout</small></p></li>
+            <li><p>Hit <b>‘Add New Layer’</b>
+                <br><small>   - each thing you want animating needs to be on a separate layer</small></p></li>
+            <li><p>Draw more, then hit an <b>Animate</b>
+                <br><small>   - animations will auto generate your layer on every page</small></p></li>
+            </ol>
+        </div>
+        <div class="instructions" id="bottom-instructions">
+                <ol start="4">
+                        <li><p>Hit <b>‘Add New Layer’</b> again
+                            <br><small>  - remeber to do this before adding something new!</small></p></li>
+                        <li><p>Drawn and <b>Animate</b> something else
+                            <br><small>   - there's loads of animations to choose</small></p></li>
+                        <li><p>Press <b>'Play'</b> to watch it! 
+                            <br><small>   - use the navigate controls to manually flip pages and save</small></p></li>
+                        </ol>
+                    </div>
+
+        </div>
+
+
     </footer>
     <script src="logo.js" defer></script>
     <script src="index.js" defer></script>
