@@ -16,15 +16,15 @@
         <div id="logo-container">
             <canvas id="logo-canvas" width="120" height="80"></canvas>
         </div>
+        <div id="display-users-flipbooks">
+                <button id="show-flipbooks">Show My FlipBooks</button>
+        </div>
         <h1 id="main-title">Flip-This!</h1>
         <div id="login-or-signup">
             <button id="login-btn" class="blue login">Login</button>
             <button id="signup-btn" class="signup">Signup</button>
             <h4 id="logged-in">Logged in: <span id="username"></span></h4>
         </div>
-    </div>
-    <div id="display-users-flipbooks">
-            <button id="show-flipbooks">Show My FlipBooks</button>
     </div>
     <div id="flipbook-list-modal" class='modal'>
         <div class="modal-content">
@@ -77,13 +77,14 @@
         <div id="notepad-background">
                 <div class="animation-config" id="left-buttons">
                 <div class="button-heading">Navigate</div>
+                        <button id='first-page'>First Page</button>
                         <button id="next-page">Next Page</button>
                         <button id="back-page">Back Page</button>                        
                         <button id="draw-save">Draw</button>  
                         <button id="play">Play</button>
                         <button id="new-flipbook">New Flipbook</button>
                         <button id="save">Save Flipbook</button>
-            </div>
+                </div>
         <div id="main-container">
             <div id="pages-and-layers">
                 <div id='page-num-div'>Page: <span id='page-num'></span></div>

@@ -437,3 +437,7 @@ footer {
 #draw-save {
     display: none;
 }
+
+#display-users-flipbooks {
+    width: 150px;
+}

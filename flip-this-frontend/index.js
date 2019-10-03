@@ -44,6 +44,7 @@ const cancelBtns = document.querySelectorAll('button.cancel-form')
 // after login
 const showFlipbooksButtonDiv = document.querySelector('div#display-users-flipbooks')
 const showFlipbooksBtn = document.querySelector('button#show-flipbooks')
+const logoContainer = document.querySelector('div#logo-container')
 
 const modal = document.querySelector('div#flipbook-list-modal')
 
@@ -65,6 +66,7 @@ const pageNumSpan = document.querySelector('span#page-num')
 const layerNumSpan = document.querySelector('span#layer-num')
 
 // display buttons
+const firstBtn = document.querySelector('button#first-page')
 const nextBtn = document.querySelector("button#next-page")
 const backBtn = document.querySelector("button#back-page")
 const playBtn = document.querySelector("button#play")
@@ -294,10 +296,19 @@ function drawStaticLayerOnEachPage(e, currentDrawData) {
         WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentCanvasCoOrds))
         drawCurrentSave(layer, currentCanvasCoOrds)
     })
-    
+    addNewLayerToAllPages()
 }
 
 // NEXT and BACK
+function handlFirstPageClick(e) {
+    let currentPage = document.querySelector(`div[data-page-num="${WIPFlipbook.currentPage}"]`)
+    currentPage.style.display = 'none'
+
+    WIPFlipbook.currentPage = 1
+    pageNumSpan.innerText = WIPFlipbook.currentPage
+    let firstPageDiv = document.querySelector(`div[data-page-num="${WIPFlipbook.currentPage}"]`)
+    firstPageDiv.style.display = 'block'
+}
 
 function handleNextPageClick(e) {
     if (WIPFlipbook.currentPage !== WIPFlipbook.totalPages) {
@@ -306,15 +317,12 @@ function handleNextPageClick(e) {
 
         WIPFlipbook.currentPage+=1
 
-        // save.clickX = []
-        // save.clickY = []
-        // save.clickDrag = []
         pageNumSpan.innerText = WIPFlipbook.currentPage
         let nextPageDiv = document.querySelector(`div[data-page-num="${WIPFlipbook.currentPage}"]`)
         nextPageDiv.style.display = 'block'
         
     } else {
-        alert("Last Page")
+        alert("It's the Last Page man... Chill")
     }
 }
 
@@ -326,15 +334,10 @@ function handleBackPageClick(e) {
 
         WIPFlipbook.currentPage-=1
 
-        // save.clickX = []
-        // save.clickY = []
-        // save.clickDrag = []
-
+        pageNumSpan.innerText = WIPFlipbook.currentPage
         let prevPageDiv = document.querySelector(`div[data-page-num="${WIPFlipbook.currentPage}"]`)
         prevPageDiv.style.display = 'block'
-    } else {
-        alert('first page')
-    }
+    } 
 }
 
 // Play
@@ -349,10 +352,12 @@ function handlePlayClick(e) {
     allPages.forEach((page, index) => {
         if (index === 0) {
             page.style.display = "block"
+            pageNumSpan.innerText = index + 1
         } else {
             setTimeout(() => {
                 allPages[index-1].style.display = 'none'
                 page.style.display = 'block'
+                pageNumSpan.innerText = index + 1
                 // setTimeout(() => canvas.style.display = 'none', 600)
             }, time)
             time+=350
@@ -399,6 +404,7 @@ function addBlinkAnimation (e) {
         allPages[index].layers[WIPFlipbook.currentLayer-1] = JSON.parse(JSON.stringify(currentLayer));
        drawCurrentSave(currentLayerPages[index], allPages[index].layers[WIPFlipbook.currentLayer-1])
     }
+    addNewLayerToAllPages()
 }
 
 function addShakeAnimation (e) {
@@ -416,6 +422,7 @@ function addShakeAnimation (e) {
             drawCurrentSave(currentLayerPages[index], allPages[index].layers[WIPFlipbook.currentLayer-1])
        }
     }
+    addNewLayerToAllPages()
 }
 
 function addMoveLeftAnimation (e){
@@ -439,6 +446,7 @@ function addMoveLeftAnimation (e){
         WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
         drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])
     }
+    addNewLayerToAllPages()
 }
 
 function addMoveRightAnimation (e) {
@@ -462,6 +470,7 @@ function addMoveRightAnimation (e) {
         WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
         drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])   
     }
+    addNewLayerToAllPages()
 }
 
 function addMoveUpAnimation(e) {
@@ -485,6 +494,7 @@ function addMoveUpAnimation(e) {
         WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
         drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])   
     }
+    addNewLayerToAllPages()
 }
 
 function addMoveDownAnimation(e) {
@@ -508,6 +518,7 @@ function addMoveDownAnimation(e) {
         WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1] = alteredCoordinates[index-(WIPFlipbook.currentPage-1)] 
         drawCurrentSave(currentLayerPages[index], WIPFlipbook.pages[index].layers[WIPFlipbook.currentLayer-1])   
     }
+    addNewLayerToAllPages()
 }
 
 // Log in and signup
@@ -555,7 +566,10 @@ function signupNewUser(e) {
             loginBtn.style.display = 'none'
             signupBtn.style.display = 'none'
             signupForm.style.display = 'none'
+            showFlipbooksButtonDiv.style.display = 'block'
             usernameSpan.parentNode.style.display = 'block'
+            logoContainer.style.display = 'none'
+
             if (Object.entries(WIPFlipbook).length === 0 && WIPFlipbook.constructor === Object) {
                 createFlipbookForm.style.display = 'block'
                 footer.style.display = 'none'
@@ -588,7 +602,9 @@ function loginUser(e){
             loginBtn.style.display = 'none'
             signupBtn.style.display = 'none'
             loginForm.style.display = 'none'
+            showFlipbooksButtonDiv.style.display = 'block'
             usernameSpan.parentNode.style.display = 'block'
+            logoContainer.style.display = 'none'
             
             if (Object.entries(WIPFlipbook).length === 0 && WIPFlipbook.constructor === Object) {
                 createFlipbookForm.style.display = 'block'
@@ -707,6 +723,7 @@ drawBtn.addEventListener('click', drawCurrentSave)
 newFlipbookBtn.addEventListener('click', showCreateFlipbookForm)
 
 // display
+firstBtn.addEventListener('click', handlFirstPageClick)
 nextBtn.addEventListener('click', handleNextPageClick)
 backBtn.addEventListener('click', handleBackPageClick)
 playBtn.addEventListener('click', handlePlayClick)
