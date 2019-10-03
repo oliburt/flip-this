@@ -114,6 +114,7 @@ function handleFlipbookCreation(e) {
     WIPFlipbook.currentPage = 1;
     WIPFlipbook.currentLayer = 1;
 
+    footer.style.display = "block"
     addPagesToWIPBook(totalPages, flipbookTitle)
 
     
