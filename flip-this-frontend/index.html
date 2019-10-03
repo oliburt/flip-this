@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Gochi+Hand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Mansalva&display=swap" rel="stylesheet">
 
+    
+    <link rel="stylesheet" href="form.css">
     <link rel="stylesheet" href="index.css">
     <title>Flip This</title>
 </head>
 <body>
-    <header>
-        <h1 id="main-title">Flip-This!</h1>
-        <h4 id="logged-in">Logged in: <span id="username"></span></h4>
-        <div id="login-or-signup">
-            <button id="login-btn">Login</button>
-            <button id="signup-btn">Signup</button>
+    <div id="header">
+        <div id="logo-container">
+            <canvas id="logo-canvas" width="120" height="80"></canvas>
         </div>
-    </header>
+        <h1 id="main-title">Flip-This!</h1>
+        <div id="login-or-signup">
+            <button id="login-btn" class="blue">Login</button>
+            <button id="signup-btn">Signup</button>
+            <h4 id="logged-in">Logged in: <span id="username"></span></h4>
+        </div>
+    </div>
     <div id="display-users-flipbooks">
             <button id="show-flipbooks">Show My FlipBooks</button>
     </div>
@@ -32,24 +38,28 @@
     <br>
     <div id="forms-container">
         <form id="create-flipbook-form">
-            <label for="title">Enter a title:</label>
+            <label for="title">Enter a title:</label> <br>
             <input type="text" name="title" id="flipbook-title">
-
+            <br>
             <label for="page-count">Select a number of pages for your FlipBook</label>
+            <br>
             <select name="page-count" id="page-count">
                 <option value="5">5 pages</option>
                 <option value="10">10 pages</option>
                 <option value="15">15 pages</option>
                 <option value="20">20 pages</option>
             </select>
-            <button type="submit">Create Book</button>
+            <br>
+            <button type="submit" class="orange">Create Book</button>
         </form>
 
         <form id="login-form">
             <h3>Login Below</h3>
             <label for="username">Username</label>
             <input type="text" name="username" id="username">
+            <br>
             <button type='submit'>Login</button>
+            <br>
             <button class="cancel-form">Cancel</button>
         </form>
 
@@ -57,7 +67,9 @@
                 <h3>Signup Below</h3>
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username">
+                <br>
                 <button type='submit'>Signup</button>
+                <br>
                 <button class="cancel-form">Cancel</button>
         </form>
     </div>
@@ -90,7 +102,7 @@
     <footer>
         <h5>footer</h5>
     </footer>
-    
+    <script src="logo.js" defer></script>
     <script src="index.js" defer></script>
 </body>
 </html>

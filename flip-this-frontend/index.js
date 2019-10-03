@@ -95,7 +95,7 @@ function handleFlipbookCreation(e) {
     while (canvasAreaDiv.firstChild) {
         canvasAreaDiv.removeChild(canvasAreaDiv.firstChild)
     }
-
+    mainContainerDiv.style.display = 'flex'
     let flipbookTitle = e.target[0].value
     let totalPages = parseInt(e.target[1].value)
 
@@ -509,6 +509,7 @@ function showSignupForm(e) {
 }
 
 function showMainContent(e) {
+    e.preventDefault()
     signupForm.style.display = 'none'
     loginForm.style.display = 'none'
     mainContainerDiv.style.display = 'block'
@@ -517,9 +518,7 @@ function showMainContent(e) {
 
 function signupNewUser(e) {
     e.preventDefault()
-
     let username = e.target[0].value
-
     let data = {
         username
     }
