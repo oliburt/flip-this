@@ -12,10 +12,6 @@ body {
     display: flex;
     margin: 0 auto;
     width: 1100px; 
-    /*margin-left: 50px;
-     padding-bottom: 40px;
-    padding-top: 15px;
-    padding-left: 55px; */
     background: url("./images/flip-this-notepad-4.png");
     background-repeat: no-repeat; 
 }
@@ -23,7 +19,6 @@ body {
 #left-buttons {
     width: 100px;
     margin-right: 60px;
-    /* margin-left: -100px; */
 }
 
 #right-buttons {
@@ -36,10 +31,6 @@ body {
 
 #main-container {
     display: flex;
-    /* padding-left:90px; */
-    /* margin: 50px; */
-    /* margin-top: 10px;
-    margin-bottom:20px; */
 }
 
 #canvas-area {
@@ -47,7 +38,6 @@ body {
     /* background-color: grey; */
     margin-bottom: 40px;
     margin-top: 15px;
-    /* margin-left: 55px; */
 }
 #animation-config {
     flex-basis: 40%;
