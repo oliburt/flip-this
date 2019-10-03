@@ -51,7 +51,7 @@ body {
     flex-basis: 60%;
     /* background-color: grey; */
     margin-bottom: 40px;
-    margin-top: 15px;
+    /* margin-top: 15px; */
 }
 #animation-config {
     flex-basis: 40%;
@@ -123,11 +123,13 @@ header {
     background-repeat: no-repeat;
     margin: 10px;
     text-align: center;
+    cursor: pointer;
 }
 
 .flipbook-list-item p {
     display: block;
-    margin-top: 40px;
+    margin-top: 20px;
+    margin-bottom: 5px;
     font-size: 20pt;
 }
 
@@ -160,6 +162,7 @@ button {
     font-weight: bold;
     font-size: 12pt;
     outline: none;
+    cursor: pointer;
 }
 
 button.login, button.signup {
@@ -304,6 +307,7 @@ form input {
 	color:#000;
     margin-bottom: 30px;
     border-bottom: 1px dashed;
+    cursor: pointer;
 }
 
 form input:focus {
@@ -334,6 +338,7 @@ form input:focus {
     background-repeat: no-repeat, repeat;
     background-position: right .7em top 50%, 0 0;
     background-size: .65em auto, 100%;
+    cursor: pointer
 }
 .select-css::-ms-expand {
     display: none;
@@ -440,4 +445,18 @@ footer {
 
 #display-users-flipbooks {
     width: 150px;
+}
+
+#flip-title {
+    font-size: 20px;
+}
+
+#flip-title-div {
+    padding-top: 10px;
+}
+
+button.small {
+    font-size: 10px;
+    padding: 2px;
+    border-radius: 10px;
 }

@@ -23,9 +23,30 @@ function post(url, data) {
     return fetch(url, configObj).then(rToJson)
 }
 
+function patch(url, id, data) {
+    let configObj = {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        },
+        body: JSON.stringify(data)
+    }
+    return fetch(url + id, configObj).then(rToJson)
+}
+
+function destroy(url, id) {
+    let configObj = {
+        method: "DELETE"
+    }
+    return fetch(url+id, configObj).then(rToJson)
+}
+
 const API = {
     post,
-    get
+    get,
+    patch,
+    destroy
 }
 // Variables -------
 
@@ -64,6 +85,7 @@ const drawBtn = document.querySelector('button#draw-save')
 
 const pageNumSpan = document.querySelector('span#page-num')
 const layerNumSpan = document.querySelector('span#layer-num')
+const flipTitleSpan = document.querySelector('span#flip-title')
 
 // display buttons
 const firstBtn = document.querySelector('button#first-page')
@@ -121,8 +143,9 @@ function handleFlipbookCreation(e) {
 
     
     createFlipbookForm.style.display = 'none'
-    pageNumSpan.innerText = WIPFlipbook.currentPage
+    pageNumSpan.innerText = WIPFlipbook.currentPage;
     layerNumSpan.innerText = WIPFlipbook.currentLayer;
+    flipTitleSpan.innerText = WIPFlipbook.title;
     // let firstPage = createCanvas(1,1)
     // canvasAreaDiv.append(firstPage)
     // for (let i = 0; i < totalPages-1; i++) {
@@ -275,12 +298,19 @@ function saveFlipBook(e) {
         user_id: currentUser.id,
         flipbook_object: JSON.stringify(WIPFlipbook)
     }
+    console.log(canvasAreaDiv.dataset)
+    console.log(canvasAreaDiv.dataset.flipbookId)
+    if (canvasAreaDiv.dataset.flipbookId) {
+        API.patch(FLIPBOOKS_URL, canvasAreaDiv.dataset.flipbookId, data).then(console.log)
+    } else {
+        console.log("patch")
+        API.post(FLIPBOOKS_URL, data).then(flipbook => {
+            currentUser.flipbooks.push(flipbook)
+            // console.log(flipbook)
+            flipbooksListContainer.append(createFlipbookListItem(JSON.parse(flipbook.flipbook_object), flipbook))
+        })     
+    }
     
-    API.post(FLIPBOOKS_URL, data).then(flipbook => {
-        currentUser.flipbooks.push(flipbook)
-        // console.log(flipbook)
-        flipbooksListContainer.append(createFlipbookListItem(JSON.parse(flipbook.flipbook_object)))
-    })
 
 }
 
@@ -555,6 +585,9 @@ function showMainContent(e) {
 function signupNewUser(e) {
     e.preventDefault()
     let username = e.target[0].value
+    if (username.length === 0) {
+        return
+    }
     let data = {
         username
     }
@@ -592,6 +625,9 @@ function signupNewUser(e) {
 function loginUser(e){
     e.preventDefault()
     let username = e.target[0].value
+    if (username.length === 0) {
+        return
+    }
 
     API.get(`${USERS_URL}${username}`)//.then(console.log)
     .then(user => {
@@ -614,8 +650,8 @@ function loginUser(e){
                 footer.style.display = 'block'
             }
 
-            let flipbooks = currentUser.flipbooks.map(flipbook => JSON.parse(flipbook.flipbook_object))
-            appendAllFlipbooksToList(flipbooks)
+            // let flipbooks = currentUser.flipbooks.map(flipbook => JSON.parse(flipbook.flipbook_object))
+            appendAllFlipbooksToList(currentUser.flipbooks)
         } else {
             let error = document.createElement('h5')
             error.innerText = user.errors[0]
@@ -632,21 +668,26 @@ function loginUser(e){
 
 // Displaying users flipbook list
 
-function createFlipbookListItem(flipbook) {
+function createFlipbookListItem(parsedFlipbookObj, flipbookResponse) {
     let div = document.createElement('div')
     div.classList.add('flipbook-list-item')
-    div.setAttribute('data-title', flipbook.title)
+    div.setAttribute('data-title', parsedFlipbookObj.title)
+    div.setAttribute('data-id', flipbookResponse.id)
     let p = document.createElement('p')
-    p.innerText = flipbook.title
-    div.append(p)
+    p.innerText = parsedFlipbookObj.title
+    let delBtn = document.createElement('button')
+    delBtn.classList.add('red', 'small')
+    delBtn.innerText = "Delete"
+    delBtn.addEventListener('click', deleteFlipBook)
+    div.append(p, delBtn)
     div.addEventListener('click', handleFlipbookDrawAndDisplay)
     return div
 }
 
 function appendAllFlipbooksToList(flipbooks) {
     flipbooks.forEach(flipbook => {
-        console.log(flipbook)
-        flipbooksListContainer.append(createFlipbookListItem(flipbook))
+        // let flipbooks = currentUser.flipbooks.map(flipbook => JSON.parse(flipbook.flipbook_object))
+        flipbooksListContainer.append(createFlipbookListItem(JSON.parse(flipbook.flipbook_object), flipbook))
     })
 }
 
@@ -662,12 +703,23 @@ function handleFlipbookDrawAndDisplay(e) {
     loginForm.style.display = 'none'
     createFlipbookForm.style.display = 'none'
     let title = e.currentTarget.dataset.title
+    console.log(title)
+
     let obj = currentUser.flipbooks.find(flipbook => {
         return JSON.parse(flipbook.flipbook_object).title === title
     })
+    console.log(obj)
+
     let flipbookObj = JSON.parse(obj.flipbook_object)
     WIPFlipbook = flipbookObj
-    drawFlipbook(WIPFlipbook)
+    if (canvasAreaDiv.dataset.flipbookId) {
+        drawFlipbook(WIPFlipbook)
+    } else {
+        canvasAreaDiv.setAttribute('data-flipbook-id', e.currentTarget.dataset.id)
+
+        
+        drawFlipbook(WIPFlipbook)
+    }
 
 }
 
@@ -690,10 +742,30 @@ function drawFlipbook(flipbook) {
             }
         })
     })
+    console.log(flipbook)
+    // WIPFlipbook.title = flipbook.title
     WIPFlipbook.currentPage = 1
-
+    WIPFlipbook.currentLayer = flipbook.pages[0].layers.length
+    pageNumSpan.innerText = WIPFlipbook.currentPage
+    layerNumSpan.innerText = WIPFlipbook.currentLayer
+    flipTitleSpan.innerText = WIPFlipbook.title
 }
 
+// Delete flipbook
+
+function deleteFlipBook(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    let id = e.currentTarget.parentNode.dataset.id
+    API.destroy(FLIPBOOKS_URL, id).then((deletedFlipbook) => {
+        if (deletedFlipbook.id) {
+            let div = document.querySelector(`div[data-id="${deletedFlipbook.id}"]`)
+            div.remove()
+            // let index = currentUser.flipbooks.findIndex(fbook => fbook.id === deletedFlipbook.id)
+
+        }
+    })
+}
 
 // Event listeners -----------
 
