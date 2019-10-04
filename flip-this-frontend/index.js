@@ -128,6 +128,7 @@ function handleFlipbookCreation(e) {
     while (canvasAreaDiv.firstChild) {
         canvasAreaDiv.removeChild(canvasAreaDiv.firstChild)
     }
+    canvasAreaDiv.removeAttribute('data-flipbook-id')
     buttonHolderDiv.style.display = 'block'
     let flipbookTitle = e.target[0].value
     let totalPages = parseInt(e.target[1].value)
@@ -605,7 +606,7 @@ function signupNewUser(e) {
     }
     API.post(USERS_URL, data).then(user => {
         if (!user.errors) {
-            currentUser = user
+            currentUser = JSON.parse(JSON.stringify(user))
             let usernameSpan = document.querySelector('span#username')
             usernameSpan.innerText = currentUser.username
             loginBtn.style.display = 'none'
@@ -724,7 +725,7 @@ function handleFlipbookDrawAndDisplay(e) {
 
     let flipbookObj = JSON.parse(obj.flipbook_object)
     WIPFlipbook = flipbookObj
-    if (canvasAreaDiv.dataset.flipbookId) {
+    if (canvasAreaDiv.dataset.flipbookId === e.currentTarget.dataset.id) {
         drawFlipbook(WIPFlipbook)
     } else {
         canvasAreaDiv.setAttribute('data-flipbook-id', e.currentTarget.dataset.id)
@@ -740,8 +741,14 @@ function drawFlipbook(flipbook) {
         canvasAreaDiv.removeChild(canvasAreaDiv.firstChild)
     }
     let numOfPages = flipbook.pages.length
+    WIPFlipbook.currentPage = 1
+    WIPFlipbook.currentLayer = flipbook.pages[0].layers.length
+    pageNumSpan.innerText = WIPFlipbook.currentPage
+    layerNumSpan.innerText = WIPFlipbook.currentLayer
+    flipTitleSpan.innerText = WIPFlipbook.title
+
     createPageDivs(numOfPages)
-    flipbook.pages.forEach((page, pageIndex) => {
+    WIPFlipbook.pages.forEach((page, pageIndex) => {
         page.layers.forEach((layer, index) => {
             if (index === 0) {
                 let canvas = document.querySelector(`div[data-page-num="${pageIndex+1}"] canvas`)
@@ -756,11 +763,7 @@ function drawFlipbook(flipbook) {
     })
     console.log(flipbook)
     // WIPFlipbook.title = flipbook.title
-    WIPFlipbook.currentPage = 1
-    WIPFlipbook.currentLayer = flipbook.pages[0].layers.length
-    pageNumSpan.innerText = WIPFlipbook.currentPage
-    layerNumSpan.innerText = WIPFlipbook.currentLayer
-    flipTitleSpan.innerText = WIPFlipbook.title
+    
 }
 
 // Delete flipbook

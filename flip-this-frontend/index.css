@@ -10,9 +10,11 @@ body {
 #notepad-background {
     display: flex;
     margin: 0 auto;
-    width: 1100px; 
+    width: 1100px;
+    height: 600px; 
     background: url("./images/flip-this-notepad-4.png");
     background-repeat: no-repeat; 
+    background-position: 0 55%;
 }
 
 #left-buttons {
@@ -379,9 +381,7 @@ form input:focus {
     justify-content: space-between;
     width: 200px;
     font-size: 20px;
-    padding-top: 10px;
-
-    
+    padding-bottom: 18px;
 }
 
 /* footer {
@@ -449,10 +449,11 @@ footer {
 
 #flip-title {
     font-size: 20px;
+    
 }
 
 #flip-title-div {
-    padding-top: 10px;
+    padding-bottom: 18px;
 }
 
 button.small {
